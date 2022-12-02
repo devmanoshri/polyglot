@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Application from "./pages/Application";
 import Navigation from "./pages/Navigation";
 import "./style-components/style.css";
-import SelectItem from "./pages/SelectItem";
+//import SelectItem from "./pages/SelectItem";
 // const GlobalStyle = createGlobalStyle`
 // body{
 //   background-color: beige;

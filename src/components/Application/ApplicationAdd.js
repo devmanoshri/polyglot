@@ -4,18 +4,15 @@ import ApplicationList from "./ApplicationList";
 import Button from "react-bootstrap/Button";
 
 const languages = [
+  { value: "0", text: "-- Language --" },
   { value: "1", text: "English" },
   { value: "2", text: "Norwegian" },
   { value: "3", text: "Germany" },
 ];
 function ApplicationAdd() {
-  // const [application, setApplication] = useState({
-  //   applicationName: "",
-  //   applicationLanguage: {},
-  // });
   const [application, setApplication] = useState({
     appName: "",
-    appLanguage: "",
+    appLanguage: "0",
   });
 
   const setAppName = (e) => {
@@ -36,7 +33,7 @@ function ApplicationAdd() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
-  console.log("added items:", list);
+  console.log("added items:", application.appLanguage);
   const handelSubmit = (e) => {
     e.preventDefault();
     const showAlert = (show = false, type = "", msg = "") => {
@@ -45,20 +42,43 @@ function ApplicationAdd() {
     if (!application.appName) {
       showAlert(true, "danger", "Please Enter Application Name");
       console.log("not name");
-    } else if (!application.appName && isEditing) {
-      console.log("edit block");
     } else {
-      console.log("next item:", application.appLanguage);
-      showAlert(true, "success", "New Application added");
-      const newItem = {
-        id: new Date().getTime().toString,
-        appName: application.appName,
-        appLanguage: application.appLanguage,
-      };
-      setList([...list, newItem]);
-      //setApplication("");
+      if (application.appLanguage == 0) {
+        showAlert(true, "danger", "Please Select Application Language");
+        console.log("not language");
+      } else {
+        if (isEditing) {
+          console.log("edit block");
+          showAlert(true, "success", "value changed");
+        } else {
+          console.log("next item:", application.appLanguage);
+          showAlert(true, "success", "New Application added");
+          const newItem = {
+            id: new Date().getTime().toString,
+            appName: application.appName,
+            appLanguage: application.appLanguage,
+          };
+          setList([...list, newItem]);
+          setApplication({
+            appName: "",
+            appLanguage: "0",
+          });
+        }
+      }
     }
   };
+  const showAlert = (show = false, type = "", msg = "") => {
+    setAlert({ show, type, msg });
+  };
+  const clearList = () => {
+    showAlert(true, "danger", "all the value has been deleted");
+    setList([]);
+  };
+  const removeItem = (id) => {
+    showAlert(true, "danger", "item Removed");
+    setList(list.filter((item) => item.id !== id));
+  };
+
   return (
     <>
       <div>
@@ -70,7 +90,13 @@ function ApplicationAdd() {
       {showForm && (
         <div className="applicationFormContainer">
           <form className="applicationForm" onSubmit={handelSubmit}>
-            {alert.show && <ApplicationAlert />}
+            {alert.show && (
+              <ApplicationAlert
+                {...alert}
+                removeAlert={showAlert}
+                list={list}
+              />
+            )}
             <h3>Add New Application</h3>
             <div className="form-group">
               <label htmlFor="appName">
@@ -90,18 +116,7 @@ function ApplicationAdd() {
               <label htmlFor="languages">
                 Select Languages <span className="text-danger">*</span>
               </label>
-              {/* <select
-                className="form-control"
-                id="languages"
-                name="languages"
-                // value={application.applicationLanguage}
-                // onChange={(e) => setApplication(e.target.value)}
-              >
-                <option value="1">English</option>
-                <option value="2">Norwegian</option>
-                <option value="3">Germany</option>
-                <option value="4">French</option>
-              </select> */}
+
               <select
                 className="form-control"
                 name="appLanguage"
@@ -126,7 +141,16 @@ function ApplicationAdd() {
 
       <div className="applicationListContainer">
         <h3>Application List</h3>
-        {list.length > 0 ? <ApplicationList items={list} /> : "List is empty."}
+        {list.length > 0 ? (
+          <>
+            <ApplicationList items={list} removeItem={removeItem} />
+            <button className="clear-btn" onClick={clearList}>
+              Clear Items
+            </button>
+          </>
+        ) : (
+          "List is empty."
+        )}
       </div>
     </>
   );

@@ -78,3 +78,7 @@ Application List Styles
   padding: 1rem;
   margin-top: 1rem;
 }
+.list-group-item {
+  display: flex !important ;
+  justify-content: space-between;
+}
