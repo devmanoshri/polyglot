@@ -82,3 +82,22 @@ Application List Styles
   display: flex !important ;
   justify-content: space-between;
 }
+.delete-btn {
+  color: var(--clr-red-dark);
+  background: transparent;
+  border-color: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 0.15rem;
+  transition: var(--transition);
+}
+
+.edit-btn {
+  color: var(--clr-green-dark);
+  background: transparent;
+  border-color: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0 0.15rem;
+  transition: var(--transition);
+}

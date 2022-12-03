@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Select from "react-bootstrap/Select";
 const colors = [
   { value: "red", text: "Red" },
   { value: "yellow", text: "Yellow" },
@@ -26,7 +26,7 @@ function SelectItem() {
         <div>
           <label>
             Choose your favorite color:
-            <select value={color} onChange={handleChange}>
+            {/* <select value={color} onChange={handleChange}>
               {colors.map((item) => {
                 return (
                   <option key={item.value} value={item.value}>
@@ -34,7 +34,8 @@ function SelectItem() {
                   </option>
                 );
               })}
-            </select>
+            </select> */}
+            <Select data={colors} touchUi={false} inputComponent="input" />
           </label>
         </div>
         <button type="submit">Submit</button>

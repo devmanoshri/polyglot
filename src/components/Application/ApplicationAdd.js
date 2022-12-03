@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ApplicationAlert from "./ApplicationAlert";
 import ApplicationList from "./ApplicationList";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,14 @@ const languages = [
   { value: "2", text: "Norwegian" },
   { value: "3", text: "Germany" },
 ];
+// const getLocalStorage = () => {
+//   let list = localStorage.getItem("list");
+//   if (list) {
+//     return (list = JSON.parse(localStorage.getItem("list")));
+//   } else {
+//     return [];
+//   }
+// };
 function ApplicationAdd() {
   const [application, setApplication] = useState({
     appName: "",
@@ -29,11 +37,12 @@ function ApplicationAdd() {
   };
 
   const [showForm, setShowForm] = useState(false);
-  const [list, setList] = useState("");
+  const [list, setList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
-  console.log("added items:", application.appLanguage);
+  console.log("added items:", list);
+
   const handelSubmit = (e) => {
     e.preventDefault();
     const showAlert = (show = false, type = "", msg = "") => {
@@ -41,20 +50,34 @@ function ApplicationAdd() {
     };
     if (!application.appName) {
       showAlert(true, "danger", "Please Enter Application Name");
-      console.log("not name");
     } else {
       if (application.appLanguage == 0) {
         showAlert(true, "danger", "Please Select Application Language");
-        console.log("not language");
       } else {
         if (isEditing) {
-          console.log("edit block");
-          showAlert(true, "success", "value changed");
+          showAlert(true, "success", "Value Updated");
+          //console.log("edit Id", editId);
+          setList(
+            list.map((item) => {
+              if (item.id === editId) {
+                return {
+                  ...item,
+                  appName: application.appName,
+                  appLanguage: application.appLanguage,
+                };
+              }
+            })
+          );
+          setApplication({
+            appName: "",
+            appLanguage: "0",
+          });
+
+          document.querySelector("#appLanguage").value = "0";
         } else {
-          console.log("next item:", application.appLanguage);
           showAlert(true, "success", "New Application added");
           const newItem = {
-            id: new Date().getTime().toString,
+            id: Date.now(),
             appName: application.appName,
             appLanguage: application.appLanguage,
           };
@@ -63,6 +86,8 @@ function ApplicationAdd() {
             appName: "",
             appLanguage: "0",
           });
+
+          document.querySelector("#appLanguage").value = "0";
         }
       }
     }
@@ -71,14 +96,30 @@ function ApplicationAdd() {
     setAlert({ show, type, msg });
   };
   const clearList = () => {
-    showAlert(true, "danger", "all the value has been deleted");
+    showAlert(true, "danger", "All the values has been deleted");
     setList([]);
   };
   const removeItem = (id) => {
-    showAlert(true, "danger", "item Removed");
+    showAlert(true, "danger", "Item Removed");
     setList(list.filter((item) => item.id !== id));
   };
+  const editItem = (id) => {
+    const specificItem = list.find((item) => item.id === id);
+    // console.log("edit block", specificItem["appName"]);
+    setIsEditing(true);
+    setEditId(id);
+    // setAppName([...list, specificItem["appName"]]);
+    setApplication({
+      appName: specificItem["appName"],
+      appLanguage: specificItem["appLanguage"],
+    });
 
+    document.querySelector("#appLanguage").value = specificItem["appLanguage"];
+  };
+
+  // useEffect(() => {
+  //   localStorage.setList("listFromStorage", JSON.stringify(list));
+  // }, [list]);
   return (
     <>
       <div>
@@ -119,6 +160,7 @@ function ApplicationAdd() {
 
               <select
                 className="form-control"
+                id="appLanguage"
                 name="appLanguage"
                 onChange={setLanguages}
               >
@@ -143,7 +185,11 @@ function ApplicationAdd() {
         <h3>Application List</h3>
         {list.length > 0 ? (
           <>
-            <ApplicationList items={list} removeItem={removeItem} />
+            <ApplicationList
+              items={list}
+              removeItem={removeItem}
+              editItem={editItem}
+            />
             <button className="clear-btn" onClick={clearList}>
               Clear Items
             </button>

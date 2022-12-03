@@ -1,8 +1,8 @@
 import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-function ApplicationList({ items, removeItem }) {
+function ApplicationList({ items, removeItem, editItem }) {
   return (
     <>
       <ListGroup>
@@ -12,13 +12,24 @@ function ApplicationList({ items, removeItem }) {
               <span>
                 {index + 1}. {item.appName} - {item.appLanguage}
               </span>
-              <button
-                type="button"
-                className="delete-btn"
-                onClick={() => removeItem(item.id)}
-              >
-                <FaTrashAlt />
-              </button>
+              <div className="btn-container">
+                <button
+                  type="button"
+                  className="edit-btn"
+                  onClick={() => {
+                    editItem(item.id);
+                  }}
+                >
+                  <FaEdit />
+                </button>
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={() => removeItem(item.id)}
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
             </ListGroup.Item>
           );
         })}
