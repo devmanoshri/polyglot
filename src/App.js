@@ -6,7 +6,9 @@ import Home from "./pages/Home";
 import Application from "./pages/Application";
 import Navigation from "./pages/Navigation";
 import "./style-components/style.css";
-import SelectItem from "./pages/SelectItem";
+import ReactMultiSelectDropdown from "./pages/ReactMultiSelectDropdown";
+//import SelectItem from "./pages/SelectItem";
+//import MultipleSelectItems from "./pages/MultipleSelectItems";
 // const GlobalStyle = createGlobalStyle`
 // body{
 //   background-color: beige;
@@ -16,14 +18,16 @@ import SelectItem from "./pages/SelectItem";
 function App() {
   return (
     <div className="bg-light">
-      {/* <Navigation />
+      <Navigation />
       <Container className="mb-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/application" element={<Application />} />
         </Routes>
-      </Container> */}
-      <SelectItem />
+      </Container>
+      {/* <SelectItem />
+      <MultipleSelectItems /> */}
+      <ReactMultiSelectDropdown />
     </div>
   );
 }

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import ApplicationAlert from "./ApplicationAlert";
 import ApplicationList from "./ApplicationList";
 import Button from "react-bootstrap/Button";
-
+import Select from "react-select";
 const languages = [
-  { value: "0", text: "-- Language --" },
-  { value: "1", text: "English" },
-  { value: "2", text: "Norwegian" },
-  { value: "3", text: "Germany" },
+  { value: "0", label: "-- Language --" },
+  { value: "1", label: "English" },
+  { value: "2", label: "Norwegian" },
+  { value: "3", label: "Germany" },
+  { value: "10", label: "French" },
+  { value: "12", label: "Bengali" },
 ];
 // const getLocalStorage = () => {
 //   let list = localStorage.getItem("list");
@@ -20,7 +22,7 @@ const languages = [
 function ApplicationAdd() {
   const [application, setApplication] = useState({
     appName: "",
-    appLanguage: "0",
+    appLanguage: [],
   });
 
   const setAppName = (e) => {
@@ -29,18 +31,23 @@ function ApplicationAdd() {
       appName: e.target.value,
     }));
   };
-  const setLanguages = (e) => {
-    setApplication((existingValue) => ({
-      ...existingValue,
-      appLanguage: e.target.value,
-    }));
-  };
+  // const setLanguages = (e) => {
+  //   setApplication((existingValue) => ({
+  //     ...existingValue,
+  //     appLanguage: e.target.value,
+  //   }));
+  // };
 
   const [showForm, setShowForm] = useState(false);
   const [list, setList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
+  const [selectedOption, setSelectedOption] = useState([]);
+
+  var setLanguages = (e) => {
+    setSelectedOption(Array.isArray(e) ? e.map((x) => x.value) : []);
+  };
   console.log("added items:", list);
 
   const handelSubmit = (e) => {
@@ -51,11 +58,10 @@ function ApplicationAdd() {
     if (!application.appName) {
       showAlert(true, "danger", "Please Enter Application Name");
     } else {
-      if (application.appLanguage == 0) {
+      if (selectedOption.length === 0) {
         showAlert(true, "danger", "Please Select Application Language");
       } else {
         if (isEditing) {
-          showAlert(true, "success", "Value Updated");
           //console.log("edit Id", editId);
           setList(
             list.map((item) => {
@@ -63,31 +69,33 @@ function ApplicationAdd() {
                 return {
                   ...item,
                   appName: application.appName,
-                  appLanguage: application.appLanguage,
+                  appLanguage: selectedOption,
                 };
               }
             })
           );
           setApplication({
             appName: "",
-            appLanguage: "0",
+            appLanguage: [],
           });
-
-          document.querySelector("#appLanguage").value = "0";
+          showAlert(true, "success", "Value Updated");
+          //document.querySelector("#appLanguage").value = "0";
         } else {
-          showAlert(true, "success", "New Application added");
           const newItem = {
             id: Date.now(),
             appName: application.appName,
-            appLanguage: application.appLanguage,
+            appLanguage: selectedOption,
           };
           setList([...list, newItem]);
           setApplication({
             appName: "",
-            appLanguage: "0",
+            appLanguage: [],
           });
-
-          document.querySelector("#appLanguage").value = "0";
+          "#appLanguage option:selected".removeAttr("selected");
+          // document.querySelector("#appLanguage").value = [];
+          //setLanguages([]);
+          // document.querySelector("#appLanguage").value = "0";
+          showAlert(true, "success", "New Application added");
         }
       }
     }
@@ -105,9 +113,10 @@ function ApplicationAdd() {
   };
   const editItem = (id) => {
     const specificItem = list.find((item) => item.id === id);
-    // console.log("edit block", specificItem["appName"]);
+    console.log("edit block", specificItem["appLanguage"]);
     setIsEditing(true);
     setEditId(id);
+    setLanguages(specificItem["appLanguage"]);
     // setAppName([...list, specificItem["appName"]]);
     setApplication({
       appName: specificItem["appName"],
@@ -158,7 +167,7 @@ function ApplicationAdd() {
                 Select Languages <span className="text-danger">*</span>
               </label>
 
-              <select
+              {/* <select
                 className="form-control"
                 id="appLanguage"
                 name="appLanguage"
@@ -171,7 +180,14 @@ function ApplicationAdd() {
                     </option>
                   );
                 })}
-              </select>
+              </select> */}
+              <Select
+                id="appLanguage"
+                onChange={setLanguages}
+                options={languages}
+                isMulti
+              />
+              <h3>selected value:{selectedOption}</h3>
             </div>
 
             <button type="submit" className="btn btn-primary">
