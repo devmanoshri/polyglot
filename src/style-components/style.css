@@ -45,6 +45,9 @@ Application Form Styles
 .form-group label {
   font-size: 1.2rem;
 }
+.label-text {
+  font-size: 1.2 rem;
+}
 /*
 ==============================  
 Application List Styles
