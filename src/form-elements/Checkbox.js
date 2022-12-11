@@ -1,9 +1,10 @@
 import React from "react";
 
-function Checkbox({ value, name, id, labelText, ifChecked }) {
+function Checkbox({ value, name, id, labelText, ifChecked, onChangeHandel }) {
   return (
     <div className="form-check">
       <input
+        onChange={onChangeHandel}
         className="form-check-input"
         type="checkbox"
         value={value}
@@ -15,6 +16,7 @@ function Checkbox({ value, name, id, labelText, ifChecked }) {
       />
       <label className="form-check-label" htmlFor="flexCheckChecked">
         {labelText}
+        {onChangeHandel}
       </label>
     </div>
   );

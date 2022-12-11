@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { add_application } from "../../actions/index";
 import InputField from "../../form-elements/InputField";
 import Checkbox from "../../form-elements/Checkbox";
-import handelSubmit from "./ApplicationFormSubmit";
+//import handelSubmit from "./ApplicationFormSubmit";
 const languages = [
   { id: "1", name: "English" },
   { id: "2", name: "Norwegian" },
@@ -12,17 +14,46 @@ const languages = [
 function ApplicationForm() {
   const [application, setApplication] = useState({
     appName: "",
-    appLanguage: {},
+    appLanguage: [],
   });
+
+  const [checked, setChecked] = useState([]);
+  const dispatch = useDispatch();
+
   const setAppName = (e) => {
     setApplication((existingValue) => ({
       ...existingValue,
       appName: e.target.value,
     }));
   };
-  //   var setLanguages = (e) => {
-  //     setApplication(Array.isArray(e) ? e.map((x) => x.value) : []);
-  //       };
+  const handleCheck = (event) => {
+    var updatedList = [...checked];
+    if (event.target.checked) {
+      updatedList = [...checked, event.target.value];
+    } else {
+      updatedList.splice(checked.indexOf(event.target.value), 1);
+    }
+    setChecked(updatedList);
+  };
+
+  const handelSubmit = (event) => {
+    event.preventDefault();
+
+    const newItem = {
+      id: Date.now(),
+      appName: application.appName,
+      languageList: checked,
+    };
+    // setList([...list, newItem]);
+    setApplication({
+      appName: "",
+      //appLanguage: [],
+    });
+    setChecked([]);
+    dispatch(add_application(newItem));
+  };
+
+  // console.log("updated list", list);
   return (
     <div className="applicationFormContainer">
       <form className="applicationForm" onSubmit={handelSubmit}>
@@ -32,7 +63,7 @@ function ApplicationForm() {
           inputType="text"
           fieldName="appName"
           placeholder="Enter Application Name"
-          // value={application.appName}
+          value={application.appName}
           onChange={setAppName}
         />
         <label className="label-text">
@@ -41,13 +72,21 @@ function ApplicationForm() {
         </label>
         {languages.map((language, index) => {
           return (
-            <Checkbox
-              key={index}
-              name="language"
-              id={language.id}
-              value={language.id}
-              labelText={language.name}
-            />
+            <div className="form-check" key={language.id}>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                name="language"
+                id={language.id}
+                value={language.id}
+                onChange={(e) => {
+                  handleCheck(e);
+                }}
+              />
+              <label className="form-check-label" htmlFor="flexCheckChecked">
+                {language.name}
+              </label>
+            </div>
           );
         })}
         <button type="submit" className="btn btn-primary">

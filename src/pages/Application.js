@@ -2,7 +2,7 @@
 //import styled from "styled-components";
 //import Button from "react-bootstrap/Button";
 import ApplicationAdd from "../components/Application/ApplicationAdd";
-//import ApplicationList from "../components/Application/ApplicationList";
+import ApplicationList from "../components/Application/ApplicationList";
 
 function Application() {
   // const [showForm, setShowForm] = useState(false);
@@ -11,6 +11,7 @@ function Application() {
     <div className="application-main">
       <div className="application-management item">
         <ApplicationAdd />
+        <ApplicationList />
       </div>
       <div className="application-details item">div2</div>
     </div>
