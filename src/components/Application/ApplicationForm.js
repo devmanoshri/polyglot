@@ -18,6 +18,8 @@ function ApplicationForm() {
   });
 
   const [checked, setChecked] = useState([]);
+  const [errorList, setErrorList] = useState([]);
+
   const dispatch = useDispatch();
 
   const setAppName = (e) => {
@@ -38,21 +40,37 @@ function ApplicationForm() {
 
   const handelSubmit = (event) => {
     event.preventDefault();
+    if (isValidData()) {
+      saveData();
+    } else {
+      console.log("show error");
+    }
+  };
 
+  const isValidData = () => {
+    var errors = [...errorList];
+    if (!application.appName) {
+      errors = [...errorList, "Please Enter Application Name"];
+      setErrorList(errors);
+      return false;
+    }
+    return true;
+  };
+  console.log(errorList);
+  const saveData = () => {
     const newItem = {
       id: Date.now(),
       appName: application.appName,
       languageList: checked,
     };
-    // setList([...list, newItem]);
+
     setApplication({
       appName: "",
       //appLanguage: [],
     });
-    setChecked([]);
+    //setChecked([]);
     dispatch(add_application(newItem));
   };
-
   // console.log("updated list", list);
   return (
     <div className="applicationFormContainer">
